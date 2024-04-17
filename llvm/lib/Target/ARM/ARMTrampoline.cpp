@@ -82,6 +82,10 @@ bool ARMTrampoline::BlxTrampoline(MachineInstr &MI, MachineOperand &MO) {
     NewInsts.push_back(BuildMI(MF, DL, TII->get(ARM::tMOVr),ARM::R8)
                         .addReg(MI.getOperand(2).getReg())
                         .add(predOps(ARMCC::AL)));
+
+    NewInsts.push_back(BuildMI(MF, DL, TII->get(ARM::t2EORrr), ARM::R8)
+                         .addReg(ARM::R8)
+                         .addReg(ARM::R9));
     
     NewInsts.push_back(BuildMI(MF, DL, TII->get(ARM::tBLXr))
               .add(predOps(ARMCC::AL))

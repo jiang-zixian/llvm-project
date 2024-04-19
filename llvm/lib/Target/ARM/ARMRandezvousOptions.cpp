@@ -28,7 +28,7 @@ EncodeDecode("arm-encode-decode",
             cl::Hidden,
             cl::desc("Enable ARM Encode and Decode"),
             cl::location(EnableEncodeDecode),
-            cl::init(false));
+            cl::init(true));
 
 bool EnableTrampoline;//jzx
 static cl::opt<bool, true>

@@ -28,7 +28,7 @@ EncodeDecode("arm-encode-decode",
             cl::Hidden,
             cl::desc("Enable ARM Encode and Decode"),
             cl::location(EnableEncodeDecode),
-            cl::init(false));
+            cl::init(true));
 
 bool EnableTrampoline;//jzx
 static cl::opt<bool, true>
@@ -36,7 +36,7 @@ Trampoline("arm-trampoline",
             cl::Hidden,
             cl::desc("Enable ARM trampoline"),
             cl::location(EnableTrampoline),
-            cl::init(true));
+            cl::init(false));
 
 
 //===----------------------------------------------------------------------===//

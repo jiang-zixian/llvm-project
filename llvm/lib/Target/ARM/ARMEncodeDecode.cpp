@@ -408,8 +408,8 @@ bool ARMEncodeDecode::runOnModule(Module &M) {
                            3) { // 找ldr  r0, [r0, #0],一步步迭代到add r0,pc
                   int f = 0;
                   switch (MI1.getOpcode()) {
-                  case ARM::tPICADD:
-                  case ARM::PICADD:
+                  case ARM::MOVTi16:
+                  case ARM::t2MOVTi16:
                     for (MachineOperand &MO : MI1.explicit_operands()) {
                       if (MO.isReg() && callRegister1 == MO.getReg()) {
                         unsigned Idx = MI1.getOperandNo(&MO);

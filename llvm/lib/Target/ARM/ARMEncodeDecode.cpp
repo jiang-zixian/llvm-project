@@ -508,11 +508,11 @@ bool ARMEncodeDecode::runOnModule(Module &M) {
         changed |= EncodeLR(*MIMO.first, *MIMO.second);
       }
 
-      if(!EnableTrampoline){
-        for (auto &MIMO : Blxs) {
-          changed |= EncodeCallSite(*MIMO.first, *MIMO.second);
-        }
-      }
+      // if(!EnableTrampoline){
+      //   for (auto &MIMO : Blxs) {
+      //     changed |= EncodeCallSite(*MIMO.first, *MIMO.second);
+      //   }
+      // }
       
 
       for (auto &MIMO : Pops) {

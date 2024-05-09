@@ -97,6 +97,29 @@ bool ARMTrampoline::BlxTrampoline(MachineInstr &MI, MachineOperand &MO) {
     return true;
 }
 
+bool ARMTrampoline::EncodeCallSite(MachineInstr &MI, MachineOperand &MO) {
+  MachineFunction &MF = *MI.getMF();
+  const TargetInstrInfo *TII = MF.getSubtarget().getInstrInfo();
+  const DebugLoc &DL = MI.getDebugLoc();
+
+  Register PredReg;
+  ARMCC::CondCodes Pred = getInstrPredicate(MI, PredReg);
+
+  std::vector<MachineInstr *> NewInsts;
+  unsigned Idx = MI.getOperandNo(&MO);
+
+  NewInsts.push_back(BuildMI(MF, DL, TII->get(ARM::t2EORrr), MO.getReg())
+                         .addReg(MO.getReg())
+                         .addReg(XorReg)
+                         .add(predOps(Pred, PredReg))
+                         .add(condCodeOp()));
+
+  // insert the decode instructions before blx
+  insertInstsBefore(MI, NewInsts);
+
+  return true;
+}
+
 
 //
 // Method: runOnModule()
@@ -125,9 +148,9 @@ bool ARMTrampoline::BlxTrampoline(MachineInstr &MI, MachineOperand &MO) {
 //
 
 bool ARMTrampoline::runOnModule(Module &M) {
-  if (!EnableTrampoline) {
-    return false;
-  }
+  // if (!EnableTrampoline) {
+  //   return false;
+  // }
 
   MachineModuleInfo &MMI = getAnalysis<MachineModuleInfoWrapperPass>().getMMI();
 
@@ -183,12 +206,18 @@ bool ARMTrampoline::runOnModule(Module &M) {
         }
       }
 
-      for (auto &MIMO : BLs) {
-        changed |= insertNop(*MIMO.first);
-      }
+      if(EnableTrampoline){
+        for (auto &MIMO : BLs) {
+          changed |= insertNop(*MIMO.first);
+        }
 
-      for (auto &MIMO : BLXs) {
-        changed |= BlxTrampoline(*MIMO.first,*MIMO.second);
+        for (auto &MIMO : BLXs) {
+          changed |= BlxTrampoline(*MIMO.first,*MIMO.second);
+        }
+      }else{
+        for (auto &MIMO : BLXs) {
+          changed |= EncodeCallSite(*MIMO.first, *MIMO.second);
+        }
       }
 
   }

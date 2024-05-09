@@ -10,6 +10,10 @@ namespace llvm {
     // Pass Identifier
     static char ID;
 
+    // xor number
+    static constexpr Register storeReg = ARM::R8;
+    static constexpr Register XorReg = ARM::R9;
+
     ARMTrampoline();
     virtual StringRef getPassName() const override;
     void getAnalysisUsage(AnalysisUsage & AU) const override;
@@ -18,6 +22,7 @@ namespace llvm {
   private:
     bool insertNop(MachineInstr &MI);
     bool BlxTrampoline(MachineInstr &MI, MachineOperand &MO);
+    bool EncodeCallSite(MachineInstr & MI, MachineOperand & MO);
   };
 
   ModulePass * createARMTrampoline(void);

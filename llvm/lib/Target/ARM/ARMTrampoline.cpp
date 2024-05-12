@@ -108,8 +108,8 @@ bool ARMTrampoline::EncodeCallSite(MachineInstr &MI, MachineOperand &MO) {
   std::vector<MachineInstr *> NewInsts;
   unsigned Idx = MI.getOperandNo(&MO);
 
-  NewInsts.push_back(BuildMI(MF, DL, TII->get(ARM::t2EORrr), MO.getReg())
-                         .addReg(MO.getReg())
+  NewInsts.push_back(BuildMI(MF, DL, TII->get(ARM::t2EORrr), MI.getOperand(2).getReg())
+                         .addReg(MI.getOperand(2).getReg())
                          .addReg(XorReg)
                          .add(predOps(Pred, PredReg))
                          .add(condCodeOp()));
